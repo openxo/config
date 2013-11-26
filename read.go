@@ -53,10 +53,23 @@ func ReadDefault(fname string) (*Config, error) {
 	return _read(fname, NewDefault())
 }
 
+func ReadDefaultUsingReader(rd io.Reader) (*Config, error) {
+
+	c := NewDefault()
+
+	if err := c.read(rd); err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
+
 // * * *
 
-func (c *Config) read(buf *bufio.Reader) (err error) {
+func (c *Config) read(rd io.Reader) (err error) {
 	var section, option string
+
+	buf := bufio.NewReader(rd)
 
 	for {
 		l, err := buf.ReadString('\n') // parse line-by-line
